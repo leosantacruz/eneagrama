@@ -153,7 +153,10 @@ function App() {
                 {dominantTypeInfo.description}
               </p>
               <a
-                href={dominantTypeInfo.link}
+                href={
+                  "https://www.psicologo-barcelona.cat/curso-eneagrama/eneagrama-eneatipo-" +
+                  dominantType
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-purple-700 hover:text-purple-800 font-medium"
@@ -184,11 +187,6 @@ function App() {
                       <div className="w-12 text-right text-sm font-medium text-gray-700">
                         {count}
                       </div>
-                    </div>
-                    <div className="pl-24 pr-12">
-                      <p className="text-sm text-gray-600">
-                        {typeInfo.title}: {typeInfo.description}
-                      </p>
                     </div>
                   </div>
                 );

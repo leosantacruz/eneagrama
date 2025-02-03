@@ -1,7 +1,5 @@
 export const introText = {
   title: "Test de Eneagrama",
-  description:
-    "El Eneagrama es una poderosa herramienta de autoconocimiento que revela 9 tipos de personalidad, sus fortalezas, desafíos y formas de ver el mundo. Te ayuda a entender tus patrones emocionales y de comportamiento para crecer y mejorar. Pero ojo: para que funcione, debes responder con total honestidad. <strong>¡Sin sinceridad, no sirve!</strong>",
   startButton: "Comenzar Test",
 };
 
