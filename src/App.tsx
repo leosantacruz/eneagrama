@@ -6,6 +6,8 @@ import {
   Download,
   ArrowLeft,
   ExternalLink,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { Question, Answer, TestProgress } from "./types";
 import { calculateResults, getEnneagramType, getProgress } from "./utils";
@@ -25,6 +27,7 @@ function App() {
   });
   const [showResults, setShowResults] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [showTypes, setShowTypes] = useState(false);
 
   useEffect(() => {
     // In a real app, this would be fetched from an API
@@ -97,31 +100,72 @@ function App() {
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-8 flex items-center justify-center">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8 sm:p-12">
-          <div className="flex flex-col items-center justify-center mb-8">
-            <Moon className="w-12 h-12 text-purple-500 my-5" />
-            <h1 className="text-3xl sm:text-4xl font-semibold text-gray-800">
-              {introText.title}
-            </h1>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-12 mb-6">
+            <div className="flex items-center justify-center mb-8">
+              <Moon className="w-12 h-12 text-purple-500 mr-3" />
+              <h1 className="text-3xl sm:text-4xl font-semibold text-gray-800">
+                {introText.title}
+              </h1>
+            </div>
 
-          <p className="text-lg text-gray-600 mb-8 leading-relaxed text-center">
-            El <strong>Eneagrama</strong> es una poderosa herramienta de
-            autoconocimiento que revela <strong>9 tipos de personalidad</strong>
-            , sus fortalezas, desafíos y formas de ver el mundo. Te ayuda a
-            entender tus patrones emocionales y de comportamiento para crecer y
-            mejorar. Pero ojo: para que funcione, debes responder con total
-            honestidad. <strong>¡Sin sinceridad, no sirve!</strong>
-          </p>
+            <p className="text-lg text-gray-600 mb-8 leading-relaxed text-center">
+              El <strong>Eneagrama</strong> es una poderosa herramienta de
+              autoconocimiento que revela{" "}
+              <strong>9 tipos de personalidad</strong>, sus fortalezas, desafíos
+              y formas de ver el mundo. Te ayuda a entender tus patrones
+              emocionales y de comportamiento para crecer y mejorar. Pero ojo:
+              para que funcione, debes responder con total honestidad. <br />
+              <strong>¡Sin sinceridad, no sirve!</strong>
+            </p>
 
-          <div className="flex justify-center">
-            <button
-              onClick={() => setShowIntro(false)}
-              className="bg-purple-500 hover:bg-purple-600 text-white font-medium py-4 px-8 rounded-lg transition-colors text-lg"
-            >
-              {introText.startButton}
-            </button>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+              <button
+                onClick={() => setShowIntro(false)}
+                className="bg-purple-500 hover:bg-purple-600 text-white font-medium py-4 px-8 rounded-lg transition-colors text-lg flex-1 sm:flex-initial"
+              >
+                {introText.startButton}
+              </button>
+              <button
+                onClick={() => setShowTypes(!showTypes)}
+                className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-medium py-4 px-8 rounded-lg border border-gray-200 transition-colors text-lg flex-1 sm:flex-initial"
+              >
+                {showTypes ? "Ocultar tipos" : "Ver tipos de Eneagrama"}
+                {showTypes ? (
+                  <ChevronUp className="w-5 h-5" />
+                ) : (
+                  <ChevronDown className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+
+            {showTypes && (
+              <div className="grid gap-6">
+                {Object.entries(typeDescriptions).map(([type, info]) => (
+                  <div
+                    key={type}
+                    className="p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h2 className="text-xl font-semibold text-gray-800">
+                        Tipo {type} - {info.title}
+                      </h2>
+                      <a
+                        href={info.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-purple-600 hover:text-purple-700 inline-flex items-center gap-1"
+                      >
+                        <span className="text-sm">Más info</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </div>
+                    <p className="text-gray-600">{info.description}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -153,10 +197,7 @@ function App() {
                 {dominantTypeInfo.description}
               </p>
               <a
-                href={
-                  "https://www.psicologo-barcelona.cat/curso-eneagrama/eneagrama-eneatipo-" +
-                  dominantType
-                }
+                href={dominantTypeInfo.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center text-purple-700 hover:text-purple-800 font-medium"
@@ -187,6 +228,11 @@ function App() {
                       <div className="w-12 text-right text-sm font-medium text-gray-700">
                         {count}
                       </div>
+                    </div>
+                    <div className="pl-24 pr-12">
+                      <p className="text-sm text-gray-600">
+                        {typeInfo.title}: {typeInfo.description}
+                      </p>
                     </div>
                   </div>
                 );
