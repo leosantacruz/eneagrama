@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Footer from "./footer";
 import {
   Sparkles,
   Moon,
@@ -168,6 +169,7 @@ function App() {
             )}
           </div>
         </div>
+        <Footer></Footer>
       </div>
     );
   }
@@ -257,6 +259,7 @@ function App() {
             </div>
           </div>
         </div>
+        <Footer></Footer>
       </div>
     );
   }
