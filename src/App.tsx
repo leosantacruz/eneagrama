@@ -259,7 +259,9 @@ function App() {
             </div>
           </div>
         </div>
-        <Footer></Footer>
+        <div className="mt-5">
+          <Footer></Footer>
+        </div>
       </div>
     );
   }
