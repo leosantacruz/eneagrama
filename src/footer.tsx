@@ -3,7 +3,7 @@ const Footer = () => {
     <>
       <hr />
       <div className="flex items-center justify-center mt-3">
-        Creado por{" "}
+        Desarrollado por{" "}
         <a
           target="_blank"
           className="mx-1 underline text-purple-600"
@@ -11,7 +11,7 @@ const Footer = () => {
         >
           Leo
         </a>
-        con colaboración de{" "}
+        , creado por{" "}
         <a
           target="_blank"
           className="mx-1 underline text-purple-600"
