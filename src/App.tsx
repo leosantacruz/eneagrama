@@ -128,17 +128,6 @@ function App() {
               >
                 {introText.startButton}
               </button>
-              <button
-                onClick={() => setShowTypes(!showTypes)}
-                className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-medium py-4 px-8 rounded-lg border border-gray-200 transition-colors text-lg flex-1 sm:flex-initial"
-              >
-                {showTypes ? "Ocultar tipos" : "Ver tipos de Eneagrama"}
-                {showTypes ? (
-                  <ChevronUp className="w-5 h-5" />
-                ) : (
-                  <ChevronDown className="w-5 h-5" />
-                )}
-              </button>
             </div>
 
             {showTypes && (
