@@ -22,7 +22,8 @@ const Footer = () => {
       </div>
 
       <div className="flex items-center justify-center text-black/50 text-sm mt-2">
-        Basado en bibliografia de Salvador A. Carrión Lopez y Jordi Pons
+        Basado en "La sabiduria del Eneagrama" de Don Richard Riso e
+        investigacion de Jordi Pons
       </div>
     </>
   );
