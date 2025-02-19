@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "./footer";
 import {
   Sparkles,
@@ -7,8 +7,6 @@ import {
   Download,
   ArrowLeft,
   ExternalLink,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { Question, Answer, TestProgress } from "./types";
 import { calculateResults, getEnneagramType, getProgress } from "./utils";
@@ -28,7 +26,6 @@ function App() {
   });
   const [showResults, setShowResults] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
-  const [showTypes, setShowTypes] = useState(false);
 
   useEffect(() => {
     // In a real app, this would be fetched from an API
@@ -129,33 +126,6 @@ function App() {
                 {introText.startButton}
               </button>
             </div>
-
-            {showTypes && (
-              <div className="grid gap-6">
-                {Object.entries(typeDescriptions).map(([type, info]) => (
-                  <div
-                    key={type}
-                    className="p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <h2 className="text-xl font-semibold text-gray-800">
-                        Tipo {type} - {info.title}
-                      </h2>
-                      <a
-                        href={info.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-purple-600 hover:text-purple-700 inline-flex items-center gap-1"
-                      >
-                        <span className="text-sm">Más info</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </div>
-                    <p className="text-gray-600">{info.description}</p>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
         <Footer></Footer>
