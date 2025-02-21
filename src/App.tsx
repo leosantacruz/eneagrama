@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import Footer from "./footer";
+import { useEffect, useState, useRef } from "react";
+import { toPng } from "html-to-image";
 import {
   Sparkles,
   Moon,
   RotateCcw,
-  Download,
+  Share2,
   ArrowLeft,
   ExternalLink,
 } from "lucide-react";
@@ -12,6 +12,7 @@ import { Question, Answer, TestProgress } from "./types";
 import { calculateResults, getEnneagramType, getProgress } from "./utils";
 import { questions as questionList } from "./questions";
 import { introText, typeDescriptions } from "./descriptions";
+import Footer from "./footer";
 
 function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -26,9 +27,10 @@ function App() {
   });
   const [showResults, setShowResults] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const resultsContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // In a real app, this would be fetched from an API
     setQuestions(questionList);
   }, []);
 
@@ -77,23 +79,25 @@ function App() {
     }
   };
 
-  const handleDownloadResults = () => {
-    const results = testProgress.answers.map((answer) => ({
-      number: answer.questionNumber,
-      answer: answer.answer ? "yes" : "no",
-    }));
+  const handleShare = async () => {
+    if (resultsContentRef.current) {
+      try {
+        const dataUrl = await toPng(resultsContentRef.current, {
+          width: 600,
+          height: resultsContentRef.current.offsetHeight,
+          style: {
+            width: "600px",
+          },
+        });
 
-    const blob = new Blob([JSON.stringify(results, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "enneagram-results.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+        const link = document.createElement("a");
+        link.download = "mi-eneagrama.png";
+        link.href = dataUrl;
+        link.click();
+      } catch (err) {
+        console.error("Error al generar la imagen:", err);
+      }
+    }
   };
 
   if (showIntro) {
@@ -127,8 +131,8 @@ function App() {
               </button>
             </div>
           </div>
+          <Footer />
         </div>
-        <Footer></Footer>
       </div>
     );
   }
@@ -141,85 +145,82 @@ function App() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-          <div className="flex items-center justify-center mb-8">
-            <Sparkles className="w-8 h-8 text-purple-500 mr-2" />
-            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
-              Tu resultado de Eneagrama
-            </h1>
-          </div>
-
-          <div className="space-y-6">
-            <div className="p-6 bg-purple-50 rounded-xl">
-              <h2 className="text-xl font-semibold text-purple-800 mb-4">
-                Tu tipo dominante es: {dominantType} - {dominantTypeInfo.title}
-              </h2>
-              <p className="text-purple-600 mb-4">
-                {dominantTypeInfo.description}
-              </p>
-              <a
-                href={dominantTypeInfo.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-purple-700 hover:text-purple-800 font-medium"
-              >
-                Aprende más sobre el Tipo {dominantType}
-                <ExternalLink className="w-4 h-4 ml-1" />
-              </a>
+        <div ref={resultsRef} className="max-w-[600px] mx-auto">
+          <div
+            ref={resultsContentRef}
+            className="bg-white rounded-2xl shadow-lg p-6 sm:p-8"
+          >
+            <div className="flex items-center justify-center mb-8">
+              <Sparkles className="w-8 h-8 text-purple-500 mr-2" />
+              <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
+                Tu resultado de Eneagrama
+              </h1>
             </div>
 
-            <div className="grid gap-4">
-              {results.map((count, index) => {
-                const typeInfo =
-                  typeDescriptions[
-                    (index + 1) as keyof typeof typeDescriptions
-                  ];
-                return (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center">
-                      <div className="w-24 text-sm font-medium text-gray-700">
-                        Tipo {index + 1}
-                      </div>
-                      <div className="flex-1 bg-gray-100 rounded-full h-4">
-                        <div
-                          className="bg-purple-500 h-4 rounded-full transition-all duration-500"
-                          style={{ width: `${(count / 20) * 100}%` }}
-                        ></div>
-                      </div>
-                      <div className="w-12 text-right text-sm font-medium text-gray-700">
-                        {count}
+            <div className="space-y-6">
+              <div className="p-6 bg-purple-50 rounded-xl">
+                <h2 className="text-xl font-semibold text-purple-800 mb-4">
+                  Tu tipo dominante es: {dominantType} -{" "}
+                  {dominantTypeInfo.title}
+                </h2>
+                <p className="text-purple-600 mb-4">
+                  {dominantTypeInfo.description}
+                </p>
+                <a
+                  href={dominantTypeInfo.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center text-purple-700 hover:text-purple-800 font-medium"
+                >
+                  Aprende más sobre el Tipo {dominantType}
+                  <ExternalLink className="w-4 h-4 ml-1" />
+                </a>
+              </div>
+
+              <div className="grid gap-4">
+                {results.map((count, index) => {
+                  return (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center">
+                        <div className="w-24 text-sm font-medium text-gray-700">
+                          Tipo {index + 1}
+                        </div>
+                        <div className="flex-1 bg-gray-100 rounded-full h-4">
+                          <div
+                            className="bg-purple-500 h-4 rounded-full transition-all duration-500"
+                            style={{ width: `${(count / 20) * 100}%` }}
+                          ></div>
+                        </div>
+                        <div className="w-12 text-right text-sm font-medium text-gray-700">
+                          {count}
+                        </div>
                       </div>
                     </div>
-                    <div className="pl-24 pr-12">
-                      <p className="text-sm text-gray-600">
-                        {typeInfo.title}: {typeInfo.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={handleReset}
-                className="flex-1 flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white font-medium py-3 px-6 rounded-lg transition-colors"
-              >
-                <RotateCcw className="w-5 h-5" />
-                Empezar de nuevo
-              </button>
-              <button
-                onClick={handleDownloadResults}
-                className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-lg border border-gray-200 transition-colors"
-              >
-                <Download className="w-5 h-5" />
-                Descargar respuestas
-              </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="mt-5">
-          <Footer></Footer>
+
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
+            <button
+              onClick={handleReset}
+              className="flex-1 flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+            >
+              <RotateCcw className="w-5 h-5" />
+              Empezar de nuevo
+            </button>
+            <button
+              onClick={handleShare}
+              className="flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-lg border border-gray-200 transition-colors"
+            >
+              <Share2 className="w-5 h-5" />
+              Compartir resultado
+            </button>
+          </div>
+          <div className="mt-5">
+            <Footer />
+          </div>
         </div>
       </div>
     );
